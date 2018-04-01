@@ -72,22 +72,19 @@ Sudoku::Sudoku(string infile){
     }
 }
 
-//  cout << "Grid Size: " << grid[0][3].size() << endl;
 
-
-
-void Sudoku::print(){
+void Sudoku::Save(string filename){
     
-    
+    std::ofstream f(filename);
     
     for (int i = 0; i < 6; i++){
         for (int j = 0; j < 6; j++)
         {
             if (cell[i][j].one==true) {
-                cout << cell[i][j].top<<" ";
+                f << cell[i][j].top<<" ";
             }
             else if (cell[i][j].three==true){
-                cout << cell[i][j].top << "/" << cell[i][j].bottom << " ";
+                f << cell[i][j].top << "/" << cell[i][j].bottom << " ";
             }
         }
         cout << '\n';
@@ -96,7 +93,7 @@ void Sudoku::print(){
 
 // Put documentation here
 bool Sudoku::Solve(){
-    int c=0,r=0;
+    int c,r;
     
     int x = 0;
     int y = 0;
@@ -108,63 +105,63 @@ bool Sudoku::Solve(){
     
     
     
-    
     for (int i = 1; i<=9; i++)
     {
-        
-        if (valid_entry(r, c, i))
+        // cout << cell[0][0].bottom;
+        if (valid_entry(r,c,i))
         {
-            //            cout << "asdadasdasd";
-            //        cout << cell.size() << endl;
-            if(cell[r][c].top==0 && cell[r][c].bottom==0){
-                cout << "asdadasdasd";
+            //cout << "Issss";
+            if(cell[r][c].top==0 && cell[r][c].bottom==0)
+            {
                 cell[r][c].top=i;
                 x++;
             }
             
             
-            else if(cell[r][c].top>0 && cell[r][c].bottom==0 && x == 0){
+            if(cell[r][c].top>0 && cell[r][c].bottom==0 && x == 0)
+            {
                 if (i>cell[r][c].top) {
                     cell[r][c].bottom=i;
                     y++;
                 }
-                else{
+                else
                     continue;
-                }
             }
             
             
-            else if(cell[r][c].top==0 && cell[r][c].bottom>0){
+            if(cell[r][c].top==0 && cell[r][c].bottom>0)
+            {
                 
                 if (i<cell[r][c].bottom)
                 {
                     cell[r][c].top=i;
                     x++;
                 }
-                else{
+                else
                     continue;
-                }
             }
-            else if(cell[r][c].one==true){
-                
+            
+            if(cell[r][c].one==true)
+            {
                 cell[r][c].top=i;
                 x++;
             }
             
             
-            if (Solve()) {
+            if (Solve())
                 return true;
-            }
             
-            if (x>0) {
+            
+            if (x>0)
                 cell[r][c].top=0;
-            }
-            if (y>0) {
+            
+            if (y>0)
                 cell[r][c].bottom=0;
-            }
         }
+        
         x=0;
         y=0;
+        
         
     }
     return false;
@@ -174,11 +171,11 @@ bool Sudoku::Solve(){
 
 // Put documentation here
 bool Sudoku::locate_unsolved(int & r, int & c){
-    
-    for (int r = 0; r<6; r++)
-        for (int c = 0; c<6; c++)
-            if(cell[r][c].top==0 || cell[r][c].bottom == 0)
+    for (r = 0; r<6; r++)
+        for (c = 0; c<6; c++)
+            if(cell[r][c].top==0 || cell[r][c].bottom == 0){
                 return true;
+            }
     return false;
 }
 
@@ -194,7 +191,8 @@ bool Sudoku::valid_row(int r, int val)
 }
 
 // Put documentation here
-bool Sudoku::valid_col(int c, int val){
+bool Sudoku::valid_col(int c, int val)
+{
     
     for (int i = 0; i < 6; i++)
         if (cell[i][c].top==val || cell[i][c].bottom==val)
@@ -215,7 +213,9 @@ bool Sudoku::valid_box(int r, int c, int val){
 
 // Put documentation here
 bool Sudoku::valid_entry(int r, int c, int val){
-    return valid_row(r, val) && valid_col(c, val) && valid_box(r - (r % 2), c - (c % 3), val);
+    
+    return !valid_row(r, val) && !valid_col(c, val) && !valid_box(r - (r % 2), c - (c % 3), val);
+    
 }
 
 // Put documentation here
